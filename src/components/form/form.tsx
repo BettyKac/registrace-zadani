@@ -17,7 +17,8 @@ export const Form: React.FC = () => {
   });
 
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false);
-  const [signUp, setSignUp] = useState<boolean>(false)
+  const [signUp, setSignUp] = useState<boolean>(false);
+  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = event.target;
@@ -28,19 +29,23 @@ export const Form: React.FC = () => {
         const atIndex = value.indexOf('@');
         if (atIndex > 0) {
           updatedUser.username = value.substring(0, atIndex);
-          setInvalidEmail(false); 
+          setInvalidEmail(false);
         } else {
-          setInvalidEmail(true); 
+          setInvalidEmail(true);
         }
+      }
+      if (name === 'password' || name === 'confirmPassword') {
+        setPasswordsMatch(updatedUser.password === updatedUser.confirmPassword);
       }
 
       return updatedUser;
     });
   };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSignUp(true)
-    console.log(user)
+    setSignUp(true);
+    console.log(user);
   };
   return (
     <form className="form" onSubmit={handleSubmit}>
@@ -51,6 +56,7 @@ export const Form: React.FC = () => {
         value={user.email}
         name="email"
         onChange={handleChange}
+        placeholder="email"
       />
       {invalidEmail && <p style={{ color: 'red' }}>Zadejte platný email.</p>}
       <input
@@ -58,21 +64,25 @@ export const Form: React.FC = () => {
         value={user.username}
         name="username"
         onChange={handleChange}
+        placeholder="username"
       />
       <input
         type="password"
         value={user.password}
         name="password"
         onChange={handleChange}
+        placeholder="password"
       />
       <input
         type="password"
         value={user.confirmPassword}
         name="confirmPassword"
         onChange={handleChange}
+        placeholder="confirm password"
       />
+      {!passwordsMatch && <p style={{ color: 'red' }}>hesla se neshodují</p>}
       <button type="submit">Register</button>
-      {signUp && <p> 🌸 Registrace úspěšná! 🦄 </p> }
+      {signUp && <p> 🌸 Registrace úspěšná! 🦄 </p>}
     </form>
   );
 };
